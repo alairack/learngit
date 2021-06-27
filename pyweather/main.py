@@ -1,0 +1,70 @@
+import socket
+import json
+import requests
+from requests import get
+from urllib import request
+
+"""
+get_inner_ip函数用于获取局域网ip，参考自https://blog.csdn.net/u013314786/article/details/78962103
+get_outer_ip函数用于获取公网ip，参考自https://www.codegrepper.com/code-examples/python/python+get+public+ip+address
+get_ip_location函数用于通过ip获取位置，使用了百度的api,参考自https://blog.csdn.net/fugitive1/article/details/82500299
+get_weather函数用于通过位置查询天气，参考自https://zacksock.blog.csdn.net/article/details/102580920
+    '''
+    获取城市的备用方法（不准确，可能在国外准确）
+    reader = geoip2.database.Reader('/path/to/GeoLite2-City.mmdb')
+    response = reader.city('223.104.204.27')
+    print(response.city)
+    '''
+"""
+
+
+def get_inner_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+    finally:
+        s.close()
+
+    return ip
+
+
+def get_outer_ip():
+    ip = get('https://api.ipify.org').text
+    return ip
+
+
+def get_ip_location(ip):
+    baidu_api_ak = 'nuA6qd7lXWRyfYOnTVYdhrO8WEHeaGhh'
+    url = "http://api.map.baidu.com/location/ip?ak=" + baidu_api_ak + "&ip=" + ip
+    req = request.Request(url)
+    res = request.urlopen(req)
+    res = res.read()
+    n = res.decode(encoding='utf-8')
+    s = json.loads(n)
+    address = s['address']
+    address = address.split('|')
+    country = address[0]
+    province = address[1]
+    city = address[2]
+    return country, province, city
+
+
+def get_weather(city):
+    weather_url = "http://wthrcdn.etouch.cn/weather_mini?city="
+    data = weather_url + city
+    weather_res = requests.get(data)
+    d = weather_res.json()
+    date = (d["data"]["forecast"][0]["date"])
+    high = (d["data"]["forecast"][0]["high"])
+    low = (d["data"]["forecast"][0]["low"])
+    weather_type = (d["data"]["forecast"][0]["type"])
+    return date, high, low, weather_type
+
+
+def run_main():
+    inner_ip = get_inner_ip()
+    outer_ip = get_outer_ip()
+    ip_location = get_ip_location(outer_ip)
+    weather = get_weather(ip_location[2])
+    return inner_ip, outer_ip, ip_location, weather

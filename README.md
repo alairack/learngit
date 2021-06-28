@@ -8,7 +8,9 @@ This is a tool to query weather of windows.The window looks a little simple now.
 - Use IP to get location
 - Automatic seek weather
 ### **install**
-1.download exe_file.zip
-2.extract zip.
-3.open folder,run "pyweather.exe".
+1. download exe_file.zip
+2. extract zip.
+3. open folder,run "pyweather.exe".
+
+good luck to you.
 

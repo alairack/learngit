@@ -12,5 +12,5 @@ This is a tool to query weather of windows.The window looks a little simple now.
 2. extract zip.
 3. open folder,run "pyweather.exe".
 
-good luck to you.
+enjoy it.
 

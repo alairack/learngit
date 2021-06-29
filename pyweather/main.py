@@ -1,70 +1,45 @@
-import socket
-import json
-import requests
-from requests import get
-from urllib import request
-
-"""
-get_inner_ip函数用于获取局域网ip，参考自https://blog.csdn.net/u013314786/article/details/78962103
-get_outer_ip函数用于获取公网ip，参考自https://www.codegrepper.com/code-examples/python/python+get+public+ip+address
-get_ip_location函数用于通过ip获取位置，使用了百度的api,参考自https://blog.csdn.net/fugitive1/article/details/82500299
-get_weather函数用于通过位置查询天气，参考自https://zacksock.blog.csdn.net/article/details/102580920
-    '''
-    获取城市的备用方法（不准确，可能在国外准确）
-    reader = geoip2.database.Reader('/path/to/GeoLite2-City.mmdb')
-    response = reader.city('223.104.204.27')
-    print(response.city)
-    '''
-"""
+import mainwindow
+import ip_window
+from PyQt5.QtWidgets import QApplication, QMainWindow
+import sys
+import connect
+import ctypes
+'''
+此文件中部分内容实现主窗口pushbutton的checked信号调出ip查询结果界面
+https://blog.csdn.net/weixin_39449466/article/details/81008711
+'''
 
 
-def get_inner_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        s.connect(('8.8.8.8', 80))
-        ip = s.getsockname()[0]
-    finally:
-        s.close()
-
-    return ip
+class ParentWindow(QMainWindow, mainwindow.Ui_MainWindow):
+    def __init__(self):
+        mainwindow.QtWidgets.QWidget.__init__(self)
+        self.main_ui = mainwindow.Ui_MainWindow()
+        self.main_ui.setupUi(self)
 
 
-def get_outer_ip():
-    ip = get('https://api.ipify.org').text
-    return ip
+class ChildWindow(QMainWindow):
+    def __init__(self):
+        QMainWindow.__init__(self)
+        self.child = ip_window.Ui_ip_window()
+        self.child.setupUi(self)
+
+    def check_weather(self):
+        inner_ip, outer_ip, ip_location, weather = connect.run_main()
+        self.child.lineEdit.setText(outer_ip)
+        self.child.label_3.setText(f"{ip_location[0]},{ip_location[1]},{ip_location[2]}")
+        self.child.label_4.setText(weather[3])
+        self.child.label_5.setText(weather[0])
+        self.child.label_6.setText(f"{weather[1]} {weather[2]}")
 
 
-def get_ip_location(ip):
-    baidu_api_ak = 'nuA6qd7lXWRyfYOnTVYdhrO8WEHeaGhh'
-    url = "http://api.map.baidu.com/location/ip?ak=" + baidu_api_ak + "&ip=" + ip
-    req = request.Request(url)
-    res = request.urlopen(req)
-    res = res.read()
-    n = res.decode(encoding='utf-8')
-    s = json.loads(n)
-    address = s['address']
-    address = address.split('|')
-    country = address[0]
-    province = address[1]
-    city = address[2]
-    return country, province, city
-
-
-def get_weather(city):
-    weather_url = "http://wthrcdn.etouch.cn/weather_mini?city="
-    data = weather_url + city
-    weather_res = requests.get(data)
-    d = weather_res.json()
-    date = (d["data"]["forecast"][0]["date"])
-    high = (d["data"]["forecast"][0]["high"])
-    low = (d["data"]["forecast"][0]["low"])
-    weather_type = (d["data"]["forecast"][0]["type"])
-    return date, high, low, weather_type
-
-
-def run_main():
-    inner_ip = get_inner_ip()
-    outer_ip = get_outer_ip()
-    ip_location = get_ip_location(outer_ip)
-    weather = get_weather(ip_location[2])
-    return inner_ip, outer_ip, ip_location, weather
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = ParentWindow()
+    child = ChildWindow()
+    btn = window.main_ui.pushButton
+    child.check_weather()
+    # 下面的ctypes方法解决任务栏图标不更改的问题，且提高运行速度
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("184232")
+    btn.clicked.connect(child.show)
+    window.show()
+    sys.exit(app.exec_())

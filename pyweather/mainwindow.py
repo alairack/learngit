@@ -19,7 +19,6 @@ class Ui_MainWindow(object):
         MainWindow.resize(467, 316)
         MainWindow.setMaximumSize(QtCore.QSize(555, 400))
         MainWindow.setWindowIcon(QtGui.QIcon("image/weather_log.ico"))
-
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralWidget)
@@ -44,8 +43,7 @@ class Ui_MainWindow(object):
         self.statusBar = QtWidgets.QStatusBar(MainWindow)
         self.statusBar.setObjectName("statusBar")
         MainWindow.setStatusBar(self.statusBar)
-        MainWindow.setStyleSheet('#MainWindow{border-image:url(image/background.jfif)}')
-
+        MainWindow.setStyleSheet('#MainWindow{background-color:white}')
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 

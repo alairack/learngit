@@ -18,6 +18,8 @@ class Ui_MainWindow(object):
         MainWindow.setWindowFlags(QtCore.Qt.MSWindowsFixedSizeDialogHint)
         MainWindow.resize(467, 316)
         MainWindow.setMaximumSize(QtCore.QSize(555, 400))
+        MainWindow.setWindowIcon(QtGui.QIcon("image/weather_log.ico"))
+
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralWidget)
@@ -49,7 +51,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "pyweather"))
         self.pushButton.setText(_translate("MainWindow", "查询"))
         self.label.setText(_translate("MainWindow", "天气查询"))
 

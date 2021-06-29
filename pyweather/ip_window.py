@@ -17,6 +17,7 @@ class Ui_ip_window(object):
         ip_window.resize(492, 297)
         ip_window.setMaximumSize(QtCore.QSize(560, 347))
         ip_window.setStyleSheet("#ip_window{border-image:url(image/ip_window_background.png)}")
+        ip_window.setWindowIcon((QtGui.QIcon("image/weather_log.ico")))
         self.centralWidget = QtWidgets.QWidget(ip_window)
         self.centralWidget.setObjectName("centralWidget")
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralWidget)
@@ -87,7 +88,7 @@ class Ui_ip_window(object):
 
     def retranslateUi(self, ip_window):
         _translate = QtCore.QCoreApplication.translate
-        ip_window.setWindowTitle(_translate("ip_window", "ip_window"))
+        ip_window.setWindowTitle(_translate("ip_window", "天气查询结果"))
         self.label_2.setText(_translate("ip_window", "您所在城市："))
         self.label.setText(_translate("ip_window", "您的ip为："))
         self.label_4.setText(_translate("ip_window", "TextLabel"))

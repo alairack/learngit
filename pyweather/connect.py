@@ -3,6 +3,7 @@ import ip_window
 from PyQt5.QtWidgets import QApplication, QMainWindow
 import sys
 import main
+import ctypes
 '''
 此文件中部分内容实现主窗口pushbutton的checked信号调出ip查询结果界面
 https://blog.csdn.net/weixin_39449466/article/details/81008711
@@ -32,11 +33,13 @@ class ChildWindow(QMainWindow):
 
 
 if __name__ == "__main__":
+
     app = QApplication(sys.argv)
     window = ParentWindow()
     child = ChildWindow()
     btn = window.main_ui.pushButton
     child.check_weather()
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("184232")
     btn.clicked.connect(child.show)
     window.show()
     sys.exit(app.exec_())

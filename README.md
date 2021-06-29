@@ -9,6 +9,8 @@ This is a tool to query weather on windows system.The window looks a little simp
 - Automatic obtain IP addresses
 - Use IP to get location
 - Automatic seek weather
+- ![avatar](https://share.weiyun.com/wHF4p32p)
+- ![avatar](https://share.weiyun.com/W4ngyL2g)
 #### **run**
 1. download exe_file.zip
 2. extract zip.

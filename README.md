@@ -10,7 +10,7 @@ This is a tool to query weather on windows system.The window looks a little simp
 - Use IP to get location
 - Automatic seek weather
 - ![运行界面](https://pic.imgdb.cn/item/60dad82f5132923bf8999de9.png)
--  ![运行界面](https://pic.imgdb.cn/item/60dad8355132923bf899c5fc.png)
+- ![运行界面](https://pic.imgdb.cn/item/60dad8355132923bf899c5fc.png)
 #### **run**
 1. download exe_file.zip
 2. extract zip.
@@ -30,7 +30,10 @@ enjoy it.
 1. 下载包含exe文件的压缩包.
 2. 解压缩zip.
 3. 打开解压后的文件夹，启动 "pyweather.exe".
+#### **注意事项**
+ 目前暂不支持国外ip查询，如使用国外ip会报错！
+ 
+**使用愉快**。
 
-使用愉快。
 
 

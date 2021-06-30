@@ -16,3 +16,5 @@ __pycache__
 #My configurations:
 db.ini
 deploy_key_rsa
+
+version.txt

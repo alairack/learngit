@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
 
 
 class Ui_ip_window(object):
@@ -49,7 +50,7 @@ class Ui_ip_window(object):
         self.lineEdit.setObjectName("lineEdit")
         self.horizontalLayout_2.addWidget(self.lineEdit)
         self.label_4 = QtWidgets.QLabel(self.centralWidget)
-        self.label_4.setGeometry(QtCore.QRect(80, 140, 91, 81))
+        self.label_4.setGeometry(QtCore.QRect(80, 130, 91, 71))
         font = QtGui.QFont()
         font.setFamily("仿宋")
         font.setPointSize(18)
@@ -66,18 +67,32 @@ class Ui_ip_window(object):
         self.label_5 = QtWidgets.QLabel(self.verticalLayoutWidget)
         font = QtGui.QFont()
         font.setPointSize(13)
-        font.setBold(True)
         self.label_5.setFont(font)
         self.label_5.setObjectName("label_5")
         self.verticalLayout.addWidget(self.label_5)
         self.label_6 = QtWidgets.QLabel(self.verticalLayoutWidget)
         self.label_6.setMinimumWidth(249)
+        self.label_6.setGeometry(QtCore.QRect(10, 210, 221, 45))
         font = QtGui.QFont()
         font.setPointSize(13)
         font.setBold(True)
         self.label_6.setFont(font)
         self.label_6.setObjectName("label_6")
         self.verticalLayout.addWidget(self.label_6)
+        self.label_7 = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.label_7.setObjectName("label_7")
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        self.label_7.setFont(font)
+        self.label_7.setMinimumWidth(239)
+        self.verticalLayout.addWidget(self.label_7)
+        self.label_8 = QtWidgets.QLabel(self.centralWidget)
+        self.label_8.setObjectName("label_8")
+        self.label_8.setGeometry(QtCore.QRect(70, 190, 111, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.label_8.setFont(font)
+        self.label_8.setText("")
         ip_window.setCentralWidget(self.centralWidget)
         self.statusBar = QtWidgets.QStatusBar(ip_window)
         self.statusBar.setObjectName("statusBar")
@@ -93,4 +108,14 @@ class Ui_ip_window(object):
         self.label_4.setText(_translate("ip_window", ""))
         self.label_5.setText(_translate("ip_window", ""))
         self.label_6.setText(_translate("ip_window", ""))
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_ip_window()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+
 

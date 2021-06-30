@@ -4,8 +4,8 @@
 block_cipher = None
 
 
-a = Analysis(['connect.py'],
-             pathex=['C:\\Users\\24030\\Desktop\\songtailai-210605\\weather\\untitled'],
+a = Analysis(['main.py'],
+             pathex=['C:\\Users\24030\Desktop\songtailai-210605\weather\pyweather'],
              binaries=[],
              datas=[('image','./image')],
              hiddenimports=[],
@@ -27,7 +27,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=False ,icon='image/icon.ico')
+          console=False ,icon='image/icon.ico', version='version.txt')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
@@ -35,4 +35,4 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='connect')
+               name='pyweather')

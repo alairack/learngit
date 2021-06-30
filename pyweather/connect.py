@@ -3,7 +3,7 @@ import json
 import requests
 from requests import get
 from urllib import request
-
+import datetime
 '''
     获取城市的备用方法（不准确，可能在国外准确）
     reader = geoip2.database.Reader('/path/to/GeoLite2-City.mmdb')
@@ -64,8 +64,29 @@ def get_weather(city):
     date = (d["data"]["forecast"][0]["date"])
     high = (d["data"]["forecast"][0]["high"])
     low = (d["data"]["forecast"][0]["low"])
+    wind = (d["data"]["forecast"][0]["fengxiang"])
+    speed = (d["data"]["forecast"][0]["fengli"])
+    # 下面的replace为了去掉 <![CDATA[]]>
+    speed = speed.replace('<![CDATA[', '')
+    speed = speed.replace(']]>', '')
+    wind = wind + speed
     weather_type = (d["data"]["forecast"][0]["type"])
-    return date, high, low, weather_type
+    return date, high, low, weather_type, wind
+
+
+def get_lunar():
+    now_time = datetime.datetime.now().strftime('%Y-%m-%d')
+    url = 'http://www.autmone.com/openapi/icalendar/queryDate?date='+str(now_time)
+    lunar = requests.get(url)
+    lunar = lunar.json()
+    # 下面两个数值先用不着,留着以后可能有用
+    # chimonth = lunar["data"]["iMonthChinese"]
+    # chiday = lunar["data"]["iDayChinese"]
+    month = lunar["data"]["sMonth"]
+    cyear = lunar["data"]["cYear"]
+    cmonth = lunar["data"]["cMonth"]
+    cday = lunar["data"]["cDay"]
+    return cyear, cmonth, cday, month
 
 
 def run_main():
@@ -73,4 +94,5 @@ def run_main():
     outer_ip = get_outer_ip()
     ip_location = get_ip_location(outer_ip)
     weather = get_weather(ip_location[2])
-    return inner_ip, outer_ip, ip_location, weather
+    lunar = get_lunar()
+    return inner_ip, outer_ip, ip_location, weather, lunar

@@ -12,6 +12,7 @@ dist
 build
 __pycache__
 .idea
+*.pkl
 
 #My configurations:
 db.ini

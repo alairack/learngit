@@ -9,13 +9,14 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 import sys
 
 
 class Ui_ip_window(object):
     def setupUi(self, ip_window):
         ip_window.setObjectName("ip_window")
-        ip_window.resize(492, 297)
+        ip_window.resize(492, 347)
         ip_window.setMaximumSize(QtCore.QSize(560, 347))
         ip_window.setStyleSheet("#ip_window{background-color:white}")
         ip_window.setWindowIcon((QtGui.QIcon("image/weather_log.ico")))
@@ -88,7 +89,21 @@ class Ui_ip_window(object):
         self.verticalLayout.addWidget(self.label_7)
         self.label_8 = QtWidgets.QLabel(self.centralWidget)
         self.label_8.setObjectName("label_8")
-        self.label_8.setGeometry(QtCore.QRect(70, 190, 111, 41))
+        self.label_8.setGeometry(QtCore.QRect(72, 190, 111, 41))
+        self.menuBar = QtWidgets.QMenuBar(ip_window)
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 344, 23))
+        self.menuBar.setObjectName("menuBar")
+        self.menu = QtWidgets.QMenu(self.menuBar)
+        self.menu.setObjectName('menu')
+        self.menu.setTitle("历史记录")
+        ip_window.setMenuBar(self.menuBar)
+        self.menuBar.addAction(self.menu.menuAction())
+        self.menu_2 = QtWidgets.QMenu(self.menu)
+        self.menu_2.setObjectName('menu2')
+        self.menu_2.setTitle('选择历史记录')
+        self.menu.addMenu(self.menu_2)
+        self.retranslateUi(ip_window)
+        QtCore.QMetaObject.connectSlotsByName(ip_window)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_8.setFont(font)
@@ -99,6 +114,9 @@ class Ui_ip_window(object):
         ip_window.setStatusBar(self.statusBar)
         self.retranslateUi(ip_window)
         QtCore.QMetaObject.connectSlotsByName(ip_window)
+
+    def error_window(self):
+        QMessageBox.critical(None, 'ERROR', '不是国内ip')
 
     def retranslateUi(self, ip_window):
         _translate = QtCore.QCoreApplication.translate
@@ -117,5 +135,3 @@ if __name__ == '__main__':
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
-

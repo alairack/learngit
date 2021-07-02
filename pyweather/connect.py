@@ -4,6 +4,7 @@ import requests
 from requests import get
 from urllib import request
 import datetime
+import pickle
 '''
     获取城市的备用方法（不准确，可能在国外准确）
     reader = geoip2.database.Reader('/path/to/GeoLite2-City.mmdb')
@@ -22,7 +23,6 @@ def get_inner_ip():
         ip = s.getsockname()[0]
     finally:
         s.close()
-
     return ip
 
 # get_outer_ip函数用于获取公网ip，
@@ -74,19 +74,22 @@ def get_weather(city):
     return date, high, low, weather_type, wind
 
 
+# get_lunar函数用于获取农历信息
+# api参考自 https://blog.csdn.net/nbskycity/article/details/106554894
+
 def get_lunar():
     now_time = datetime.datetime.now().strftime('%Y-%m-%d')
     url = 'http://www.autmone.com/openapi/icalendar/queryDate?date='+str(now_time)
     lunar = requests.get(url)
     lunar = lunar.json()
     # 下面两个数值先用不着,留着以后可能有用
-    # chimonth = lunar["data"]["iMonthChinese"]
-    # chiday = lunar["data"]["iDayChinese"]
+    chimonth = lunar["data"]["iMonthChinese"]
+    chiday = lunar["data"]["iDayChinese"]
     month = lunar["data"]["sMonth"]
     cyear = lunar["data"]["cYear"]
-    cmonth = lunar["data"]["cMonth"]
-    cday = lunar["data"]["cDay"]
-    return cyear, cmonth, cday, month
+    # cmonth = lunar["data"]["cMonth"]
+    # cday = lunar["data"]["cDay"]
+    return cyear, chimonth, chiday, month
 
 
 def run_main():
@@ -96,3 +99,34 @@ def run_main():
     weather = get_weather(ip_location[2])
     lunar = get_lunar()
     return inner_ip, outer_ip, ip_location, weather, lunar
+
+
+# save_history把每次打开窗口获取的信息存储到history.pkl中
+
+def save_history(info):
+    try:
+        f = open('history.pkl', 'rb')
+        content = pickle.load(f)
+        f.close()
+        save_time = datetime.datetime.now()
+        save_time = str(save_time).split(".")[0]
+        content[save_time] = info
+        with open('history.pkl', 'wb') as f:
+            pickle.dump(content, f)
+    except FileNotFoundError:
+        f = open('history.pkl', 'wb')
+        pickle.dump({}, f)
+        f.close()
+        save_history(info)
+    except EOFError:
+        f = open('history.pkl', 'wb')
+        pickle.dump({}, f)
+        f.close()
+        save_history(info)
+    except TypeError:
+        f = open('history.pkl', 'wb')
+        pickle.dump({}, f)
+        f.close()
+        save_history(info)
+    else:
+        pass

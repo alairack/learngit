@@ -99,8 +99,7 @@ if __name__ == "__main__":
         MainWindow.show()
         read_history(ui)
         clear_his(ui, MainWindow)
-        sys.exit(app.exec_())
-    except KeyError:
-        ui.error_window()
     except:
         ui.error_window()
+    else:
+        sys.exit(app.exec_())

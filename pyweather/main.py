@@ -101,4 +101,6 @@ if __name__ == "__main__":
         clear_his(ui, MainWindow)
         sys.exit(app.exec_())
     except KeyError:
-        MainWindow.error_window()
+        ui.error_window()
+    except:
+        ui.error_window()

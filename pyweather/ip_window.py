@@ -23,7 +23,7 @@ class Ui_ip_window(object):
         self.centralWidget = QtWidgets.QWidget(ip_window)
         self.centralWidget.setObjectName("centralWidget")
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralWidget)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(80, 49, 248, 51))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(78, 50, 241, 41))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setContentsMargins(11, 11, 11, 11)
@@ -90,6 +90,11 @@ class Ui_ip_window(object):
         self.label_8 = QtWidgets.QLabel(self.centralWidget)
         self.label_8.setObjectName("label_8")
         self.label_8.setGeometry(QtCore.QRect(72, 190, 111, 41))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.label_8.setFont(font)
+        self.label_8.setText("")
+        ip_window.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(ip_window)
         self.menuBar.setGeometry(QtCore.QRect(0, 0, 344, 23))
         self.menuBar.setObjectName("menuBar")
@@ -99,16 +104,32 @@ class Ui_ip_window(object):
         ip_window.setMenuBar(self.menuBar)
         self.menuBar.addAction(self.menu.menuAction())
         self.menu_2 = QtWidgets.QMenu(self.menu)
-        self.menu_2.setObjectName('menu2')
+        self.menu_2.setObjectName('menu_2')
         self.menu_2.setTitle('选择历史记录')
         self.menu.addMenu(self.menu_2)
-        self.retranslateUi(ip_window)
-        QtCore.QMetaObject.connectSlotsByName(ip_window)
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.label_8.setFont(font)
-        self.label_8.setText("")
-        ip_window.setCentralWidget(self.centralWidget)
+        self.menu_3 = QtWidgets.QMenu(self.menuBar)
+        self.menu_3.setObjectName('menu3')
+        self.menu_3.setTitle("选择城市")
+        self.menuBar.addMenu(self.menu_3)
+        self.horizontalLayoutWidget_3 = QtWidgets.QWidget(self.centralWidget)
+        self.horizontalLayoutWidget_3.setGeometry(QtCore.QRect(50, 85, 261, 41))
+        self.horizontalLayoutWidget_3.setObjectName("horizontalLayoutWidget")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget_3)
+        self.horizontalLayout_3.setContentsMargins(11, 11, 11, 11)
+        self.horizontalLayout_3.setSpacing(6)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.label_9 = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        self.label_9.setObjectName("label_9")
+        self.label_9.setMinimumWidth(180)
+        self.horizontalLayout_3.addWidget(self.label_9)
+        self.label_10 = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        self.label_10.setObjectName("label_3")
+        self.label_10.setMinimumWidth(140)
+        self.clear_history = QtWidgets.QAction(ip_window)
+        self.clear_history.setEnabled(True)
+        self.clear_history.setObjectName('clear_history')
+        self.clear_history.setText("清除历史记录")
+        self.horizontalLayout_3.addWidget(self.label_10)
         self.statusBar = QtWidgets.QStatusBar(ip_window)
         self.statusBar.setObjectName("statusBar")
         ip_window.setStatusBar(self.statusBar)
@@ -117,6 +138,14 @@ class Ui_ip_window(object):
 
     def error_window(self):
         QMessageBox.critical(None, 'ERROR', '不是国内ip')
+        sys.exit(0)
+
+    def error_window2(self):
+        QMessageBox.critical(None, "ERROR", "读取城市列表失败，请检查文件")
+        sys.exit(0)
+
+    def error_window3(self):
+        QMessageBox.critical(None, 'ERROR', '读取历史记录失败！')
 
     def retranslateUi(self, ip_window):
         _translate = QtCore.QCoreApplication.translate
@@ -126,6 +155,8 @@ class Ui_ip_window(object):
         self.label_4.setText(_translate("ip_window", ""))
         self.label_5.setText(_translate("ip_window", ""))
         self.label_6.setText(_translate("ip_window", ""))
+        self.label_9.setText(_translate('ip_window', "您当前查询城市:"))
+        self.label_10.setText(_translate("ip_window", ""))
 
 
 if __name__ == '__main__':

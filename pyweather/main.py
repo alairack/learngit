@@ -1,3 +1,4 @@
+import json
 import ip_window
 from PyQt5.QtWidgets import QApplication, QAction, QMessageBox
 from PyQt5 import QtWidgets
@@ -24,11 +25,13 @@ def show_weather(self, info):
     self.label_6.setText(f"{weather[1]} {weather[2]}")
     self.label_7.setText(f"{lunar[0]},{lunar[1]}{lunar[2]}")
     self.label_8.setText(weather[4])
-
-# show_history把读取的历史记录传递给show_weather显示
+    self.label_10.setText(ip_location[2])
 
 
 def show_history(self, date):
+    """
+    show_history把读取的历史记录传递给show_weather进行显示
+    """
     f = open('history.pkl', 'rb')
     content = pickle.load(f)
     f.close()
@@ -36,11 +39,12 @@ def show_history(self, date):
     info = content[date]
     show_weather(self, info)
 
-# read_history函数用于读取已有的历史记录,在54行的connect需只能连接函数本身（函数后不能加括号）
-# h变量指向在 “选择历史记录”下创建的历史记录（action)
-
 
 def read_history(self):
+    """
+    read_history函数用于读取已有的历史记录,在54行的connect需只能连接函数本身（函数后不能加括号）
+    h变量指向在 “选择历史记录”下创建的历史记录（action)
+    """
     f = open('history.pkl', 'rb')
     content = pickle.load(f)
     f.close()
@@ -57,18 +61,22 @@ def read_history(self):
             h.triggered.connect(partial(show_history, ui, date))
             number = number + 1
     else:
-        QMessageBox.critical(None, 'ERROR', '读取历史记录失败！')
-
-# clear_his 执行清除历史记录的相关程序
+        raise ValueError('')
 
 
 def clear_his(self, window):
+    """
+    clear_his 执行清除历史记录的相关程序
+    """
     def clear():
         f = open('history.pkl', 'wb')
         pickle.dump('', f)
         f.close()
 
         def set_menu_disable():
+            """
+            把所有的历史记录action设置为不可点击，如点击会报错
+            """
             names = ui.__dict__
             number = 1
             try:
@@ -79,12 +87,68 @@ def clear_his(self, window):
                 pass
         set_menu_disable()
         QMessageBox.information(window, '删除历史记录', '历史记录已删除，重启后生效！')
-    self.clear_history = QtWidgets.QAction(window)
-    self.clear_history.setEnabled(True)
-    self.clear_history.setObjectName('clear_history')
-    self.clear_history.setText("清除历史记录")
     self.menu.addAction(self.clear_history)
     self.clear_history.triggered.connect(clear)
+
+
+def choose_city(self):
+    def show_city():
+        try:
+            f = open('package.json', encoding='utf-8')
+            content = f.read()
+        except:
+            raise FileNotFoundError("")
+        else:
+            content = json.loads(content)
+            content = content['provinces']
+            names = self.__dict__
+            number = 1
+            for city in content:
+                city_list = city['citys']
+                names['provinces' + str(number)] = QtWidgets.QMenu(self.menu_3)
+                names['provinces' + str(number)].setObjectName('provinces' + str(number))
+                names['provinces' + str(number)].setTitle(city['provinceName'])
+                self.menu_3.addMenu(names['provinces' + str(number)])
+                for city_name in city_list:
+                    s = city_name["citysName"]
+                    names['city' + str(number)] = QtWidgets.QAction(MainWindow)
+                    names['city' + str(number)].setEnabled(True)
+                    names['city' + str(number)].setObjectName('city' + str(number))
+                    names['city' + str(number)].setText(s)
+                    names['provinces' + str(number)].addAction(names['city' + str(number)])
+                    h = names['city' + str(number)]
+                    h.triggered.connect(partial(run_choose, s))
+
+    def run_choose(city):
+        weather = connect.get_weather(city)
+        self.label_4.setText(weather[3])
+        self.label_6.setText(f"{weather[1]} {weather[2]}")
+        self.label_8.setText(weather[4])
+        self.label_10.setText(city)
+    show_city()
+
+
+def run(self):
+    try:
+        weather = check_weather()
+        show_weather(self, weather)
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("184232")  # ctypes方法解决任务栏图标不更改的问题，且提高运行速度
+        MainWindow.show()
+        read_history(self)
+        clear_his(self, MainWindow)
+        choose_city(self)
+
+    except ValueError:
+        self.error_window3()
+        sys.exit(0)
+    except FileNotFoundError:
+        self.error_window2()
+        sys.exit(0)
+    except:
+        self.error_window()
+        sys.exit(app.exec_())
+    else:
+        sys.exit(app.exec_())
 
 
 if __name__ == "__main__":
@@ -92,14 +156,4 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = ip_window.Ui_ip_window()
     ui.setupUi(MainWindow)
-    try:
-        show_weather(ui, check_weather())
-        # 下面的ctypes方法解决任务栏图标不更改的问题，且提高运行速度
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("184232")
-        MainWindow.show()
-        read_history(ui)
-        clear_his(ui, MainWindow)
-    except:
-        ui.error_window()
-    else:
-        sys.exit(app.exec_())
+    run(ui)

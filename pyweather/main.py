@@ -1,7 +1,7 @@
 import json
 import ip_window
 from PyQt5.QtWidgets import QApplication, QAction, QMessageBox, QInputDialog
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 import sys
 import connect
 import ctypes
@@ -75,6 +75,8 @@ def show_history(self, date):
     date = str(date)
     info = content[date]
     show_weather(self, info)
+    _translate = QtCore.QCoreApplication.translate
+    MainWindow.setWindowTitle(_translate("MainWindow", f"{date}  历史天气"))
 
 
 def read_history(self):
@@ -89,10 +91,11 @@ def read_history(self):
         names = self.__dict__
         number = 1
         for date, value in content.items():
+            weather = value[3]
             names['history' + str(number)] = QAction(MainWindow)
             names['history' + str(number)].setEnabled(True)
             names['history' + str(number)].setObjectName('history' + str(number))
-            names['history' + str(number)].setText(date)
+            names['history' + str(number)].setText(f"{date} {weather[3]}   {weather[1]}   {weather[2]}")
             self.menu_2.addAction(names['history' + str(number)])
             h = names['history' + str(number)]
             h.triggered.connect(partial(show_history, ui, date))
@@ -162,7 +165,11 @@ def choose_city(self):
         self.label_6.setText(f"{weather[1]} {weather[2]}")
         self.label_8.setText(weather[4])
         self.label_10.setText(city)
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", f"{city} 查询结果"))
     show_city()
+
+
 
 
 def get_history_settings(info):
@@ -206,6 +213,17 @@ def input_history_setting(history_number):
             f.write(s)
 
 
+def query_today_weather(self):
+    """
+    查询当前天气按钮，并判断是否存储
+    """
+    connect_info = connect.run_main()
+    show_weather(self, connect_info)
+    setting_history(connect_info)
+    _translate = QtCore.QCoreApplication.translate
+    MainWindow.setWindowTitle(_translate("MainWindow", "当前天气查询结果"))
+
+
 def run(self):
     try:
         connect_info = connect.run_main()
@@ -217,6 +235,7 @@ def run(self):
         read_history(self)
         clear_his(self, MainWindow)
         choose_city(self)
+        self.menu_5.triggered.connect(partial(query_today_weather, self))
     except ValueError:
         self.error_window3()
         sys.exit(0)

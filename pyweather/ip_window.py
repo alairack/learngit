@@ -116,6 +116,11 @@ class Ui_ip_window(object):
         self.menu_4.setText("设置存储历史记录条数")
         self.menu_4.setEnabled(True)
         self.menu.addAction(self.menu_4)
+        self.menu_5 = QtWidgets.QAction(ip_window)
+        self.menu_5.setObjectName("menu_5")
+        self.menu_5.setText("查询当前天气")
+        self.menu_5.setEnabled(True)
+        self.menu.addAction(self.menu_5)
         self.horizontalLayoutWidget_3 = QtWidgets.QWidget(self.centralWidget)
         self.horizontalLayoutWidget_3.setGeometry(QtCore.QRect(50, 85, 261, 41))
         self.horizontalLayoutWidget_3.setObjectName("horizontalLayoutWidget")
@@ -156,7 +161,7 @@ class Ui_ip_window(object):
 
     def retranslateUi(self, ip_window):
         _translate = QtCore.QCoreApplication.translate
-        ip_window.setWindowTitle(_translate("ip_window", "天气查询结果"))
+        ip_window.setWindowTitle(_translate("ip_window", "今日天气查询结果"))
         self.label_2.setText(_translate("ip_window", "您所在城市："))
         self.label.setText(_translate("ip_window", "您的ip为："))
         self.label_4.setText(_translate("ip_window", ""))

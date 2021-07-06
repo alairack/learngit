@@ -111,6 +111,11 @@ class Ui_ip_window(object):
         self.menu_3.setObjectName('menu3')
         self.menu_3.setTitle("选择城市")
         self.menuBar.addMenu(self.menu_3)
+        self.menu_4 = QtWidgets.QAction(ip_window)
+        self.menu_4.setObjectName('menu_4')
+        self.menu_4.setText("设置存储历史记录条数")
+        self.menu_4.setEnabled(True)
+        self.menu.addAction(self.menu_4)
         self.horizontalLayoutWidget_3 = QtWidgets.QWidget(self.centralWidget)
         self.horizontalLayoutWidget_3.setGeometry(QtCore.QRect(50, 85, 261, 41))
         self.horizontalLayoutWidget_3.setObjectName("horizontalLayoutWidget")
@@ -146,6 +151,8 @@ class Ui_ip_window(object):
 
     def error_window3(self):
         QMessageBox.critical(None, 'ERROR', '读取历史记录失败！')
+
+
 
     def retranslateUi(self, ip_window):
         _translate = QtCore.QCoreApplication.translate

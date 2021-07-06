@@ -1,6 +1,6 @@
 import json
 import ip_window
-from PyQt5.QtWidgets import QApplication, QAction, QMessageBox
+from PyQt5.QtWidgets import QApplication, QAction, QMessageBox, QInputDialog
 from PyQt5 import QtWidgets
 import sys
 import connect
@@ -9,10 +9,47 @@ import pickle
 from functools import partial
 
 
-def check_weather():
-    connect_info = connect.run_main()
-    connect.save_history(connect_info)
-    return connect_info
+def setting_history(info):
+    """
+    此函数获得设置的历史记录条数和已存在的历史记录条数，并判断是否储存
+    """
+    def get_history_number():
+        try:
+            with open('history.pkl', 'rb') as f1:
+                y = pickle.load(f1)
+                save_number = len(y)
+            return save_number
+        except FileNotFoundError:
+            f = open('history.pkl', 'wb')
+            pickle.dump({}, f)
+            f.close()
+            history_number = get_history_number()
+            return history_number
+        except EOFError:
+            f = open('history.pkl', 'wb')
+            pickle.dump({}, f)
+            f.close()
+            history_number = get_history_number()
+            return history_number
+        except TypeError:
+            f = open('history.pkl', 'wb')
+            pickle.dump({}, f)
+            f.close()
+            history_number = get_history_number()
+            return history_number
+        except:
+            f = open('history.pkl', 'wb')
+            pickle.dump({}, f)
+            f.close()
+            history_number = get_history_number()
+            return history_number
+    exist_number = get_history_number()
+    setting_number = get_history_settings(info)
+    if exist_number >= setting_number:
+        return setting_number
+    else:
+        connect.save_history(info)
+        return setting_number
 
 
 def show_weather(self, info):
@@ -128,16 +165,58 @@ def choose_city(self):
     show_city()
 
 
+def get_history_settings(info):
+    """
+    此函数获取存在文本文件中的历史记录设置，返回历史记录设置条数
+    rfind函数参考自： https://blog.csdn.net/qq_43894151/article/details/113876461
+    """
+    try:
+        with open('config.txt', 'r') as f:
+            content = f.read()
+            history_number = content[content.rfind("history_number=", 0, 17):][-2:]
+            history_number = int(history_number)
+        if history_number == -1 and type(history_number) == 'NoneType':
+            with open('config.txt', 'w') as f2:
+                f2.write("history_number=10")
+            history_number = get_history_settings(info)
+            return history_number
+        else:
+            return history_number
+    except FileNotFoundError:
+        with open('config.txt', 'w') as f1:
+            f1.write("history_number=10")
+        history_number = get_history_settings(info)
+        return history_number
+    except:
+        with open('config.txt', 'w') as f1:
+            f1.write("history_number=10")
+        history_number = get_history_settings(info)
+        return history_number
+
+
+def input_history_setting(history_number):
+    """
+    此函数为历史记录条数输入框，由setting_history调用
+    """
+    input_number, ok = QInputDialog.getInt(MainWindow, '输入历史记录条数', '请输入最多存储多少条历史记录（最多为99)', history_number, 0, 99, 1)
+    if ok:
+        input_number = str(input_number)
+        s = "history_number=" + input_number
+        with open("config.txt", "w") as f:
+            f.write(s)
+
+
 def run(self):
     try:
-        weather = check_weather()
-        show_weather(self, weather)
+        connect_info = connect.run_main()
+        show_weather(self, connect_info)
+        setting_number = setting_history(connect_info)
+        self.menu_4.triggered.connect(partial(input_history_setting, setting_number))
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("184232")  # ctypes方法解决任务栏图标不更改的问题，且提高运行速度
         MainWindow.show()
         read_history(self)
         clear_his(self, MainWindow)
         choose_city(self)
-
     except ValueError:
         self.error_window3()
         sys.exit(0)

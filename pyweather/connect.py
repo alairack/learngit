@@ -1,10 +1,12 @@
 import socket
 import json
+import os
 import requests
 from requests import get
 from urllib import request
 import datetime
 import pickle
+import geoip2.database
 
 
 def get_inner_ip():
@@ -21,12 +23,19 @@ def get_inner_ip():
     return ip
 
 
-def get_outer_ip():
+def get_outer_ip1():
     """
     get_outer_ip函数用于获取公网ip，
     参考自 https://www.codegrepper.com/code-examples/python/python+get+public+ip+address
     """
     ip = get('https://api.ipify.org').text
+    return ip
+
+
+def get_outer_ip2():
+    ip = requests.get('http://ip-api.com/json/?lang=zh-CN')
+    ip = ip.json()
+    ip = ip['query']
     return ip
 
 
@@ -89,12 +98,23 @@ def get_lunar():
 
 
 def run_main():
-    inner_ip = get_inner_ip()
-    outer_ip = get_outer_ip()
-    ip_location = get_ip_location(outer_ip)
-    weather = get_weather(ip_location[2])
-    lunar = get_lunar()
-    return [inner_ip, outer_ip, ip_location, weather, lunar]
+    try:
+        inner_ip = get_inner_ip()
+        outer_ip = get_outer_ip2()
+        ip_location = get_ip_location(outer_ip)
+        weather = get_weather(ip_location[2])
+        lunar = get_lunar()
+        return [inner_ip, outer_ip, ip_location, weather, lunar]
+    except:
+        try:
+            inner_ip = None
+            outer_ip = get_outer_ip2()
+            ip_location = foreign(outer_ip)
+            weather = ('', '', '', '', '')
+            lunar = ('', '', '', '')
+            return [inner_ip, outer_ip, ip_location, weather, lunar]
+        except:
+            raise TimeoutError
 
 
 def save_history(info):
@@ -129,9 +149,11 @@ def save_history(info):
         pass
 
 
-'''
-    获取城市的备用方法（不准确，可能在国外准确）
-    reader = geoip2.database.Reader('/path/to/GeoLite2-City.mmdb')
-    response = reader.city('223.104.204.27')
-    print(response.city)
-'''
+def foreign(ip):
+    path = os.path.abspath('.')
+    reader = geoip2.database.Reader(path + '/GeoLite2-City.mmdb')
+    response = reader.city(ip)
+    city = response.city.name
+    province = response.continent.name
+    country = response.country.name
+    return country, province, city

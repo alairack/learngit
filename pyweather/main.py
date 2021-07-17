@@ -1,12 +1,14 @@
 import json
 import ip_window
-from PyQt5.QtWidgets import QApplication, QAction, QMessageBox, QInputDialog
-from PyQt5 import QtWidgets, QtCore
-import sys
+from PyQt5.QtWidgets import QAction,  QInputDialog
+from PyQt5 import QtCore
 import connect
 import ctypes
 import pickle
 from functools import partial
+from update import *
+import sys
+import shutil
 
 
 def setting_history(info):
@@ -170,8 +172,6 @@ def choose_city(self):
     show_city()
 
 
-
-
 def get_history_settings(info):
     """
     此函数获取存在文本文件中的历史记录设置，返回历史记录设置条数
@@ -224,29 +224,29 @@ def query_today_weather(self):
     MainWindow.setWindowTitle(_translate("MainWindow", "当前天气查询结果"))
 
 
+def after_update_run():
+    os.remove('../update.bat')
+    shutil.rmtree('../pyweather_update')    # 递归删除文件夹
+    os.remove('../pyweather_update.zip')
+    QtWidgets.QMessageBox.information(None, "更新完成", "新版本已更新完毕", QtWidgets.QMessageBox.Ok)
+
+
 def run(self):
-    try:
-        connect_info = connect.run_main()
-        show_weather(self, connect_info)
-        setting_number = setting_history(connect_info)
-        self.menu_4.triggered.connect(partial(input_history_setting, setting_number))
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("184232")  # ctypes方法解决任务栏图标不更改的问题，且提高运行速度
-        MainWindow.show()
-        read_history(self)
-        clear_his(self, MainWindow)
-        choose_city(self)
-        self.menu_5.triggered.connect(partial(query_today_weather, self))
-    except ValueError:
-        self.error_window3()
-        sys.exit(0)
-    except FileNotFoundError:
-        self.error_window2()
-        sys.exit(0)
-    except:
-        self.error_window()
-        sys.exit(app.exec_())
+    connect_info = connect.run_main()
+    show_weather(self, connect_info)
+    setting_number = setting_history(connect_info)
+    self.menu_4.triggered.connect(partial(input_history_setting, setting_number))
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("184232")  # ctypes方法解决任务栏图标不更改的问题，且提高运行速度
+    MainWindow.show()
+    read_history(self)
+    clear_his(self, MainWindow)
+    choose_city(self)
+    self.menu_5.triggered.connect(partial(query_today_weather, self))
+    if os.path.isfile("../update.bat"):
+        after_update_run()
     else:
-        sys.exit(app.exec_())
+        judge_update()
+    sys.exit(app.exec_())
 
 
 if __name__ == "__main__":
@@ -255,3 +255,5 @@ if __name__ == "__main__":
     ui = ip_window.Ui_ip_window()
     ui.setupUi(MainWindow)
     run(ui)
+
+

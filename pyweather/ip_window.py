@@ -146,9 +146,6 @@ class Ui_ip_window(object):
         self.retranslateUi(ip_window)
         QtCore.QMetaObject.connectSlotsByName(ip_window)
 
-    def error_window(self):
-        QMessageBox.critical(None, 'ERROR', '不是国内ip')
-        sys.exit(0)
 
     def error_window2(self):
         QMessageBox.critical(None, "ERROR", "读取城市列表失败，请检查文件")

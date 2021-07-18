@@ -7,6 +7,7 @@ from urllib import request
 import datetime
 import pickle
 import geoip2.database
+from PyQt5.QtWidgets import QMessageBox
 
 
 def get_inner_ip():
@@ -114,7 +115,7 @@ def run_main():
             lunar = ('', '', '', '')
             return [inner_ip, outer_ip, ip_location, weather, lunar]
         except:
-            raise TimeoutError
+            QMessageBox.critical(None, '网络异常', '网络未响应，请检查网络', QMessageBox.Ok)
 
 
 def save_history(info):

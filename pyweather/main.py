@@ -86,24 +86,25 @@ def read_history(self):
     read_history函数用于读取已有的历史记录,在54行的connect需只能连接函数本身（函数后不能加括号）
     h变量指向在 “选择历史记录”下创建的历史记录（action)
     """
-    f = open('history.pkl', 'rb')
-    content = pickle.load(f)
-    f.close()
-    if type(content) == dict:
-        names = self.__dict__
-        number = 1
-        for date, value in content.items():
-            weather = value[3]
-            names['history' + str(number)] = QAction(MainWindow)
-            names['history' + str(number)].setEnabled(True)
-            names['history' + str(number)].setObjectName('history' + str(number))
-            names['history' + str(number)].setText(f"{date} {weather[3]}   {weather[1]}   {weather[2]}")
-            self.menu_2.addAction(names['history' + str(number)])
-            h = names['history' + str(number)]
-            h.triggered.connect(partial(show_history, ui, date))
-            number = number + 1
-    else:
-        raise ValueError('')
+    try:
+        f = open('history.pkl', 'rb')
+        content = pickle.load(f)
+        f.close()
+        if type(content) == dict:
+            names = self.__dict__
+            number = 1
+            for date, value in content.items():
+                weather = value[3]
+                names['history' + str(number)] = QAction(MainWindow)
+                names['history' + str(number)].setEnabled(True)
+                names['history' + str(number)].setObjectName('history' + str(number))
+                names['history' + str(number)].setText(f"{date} {weather[3]}   {weather[1]}   {weather[2]}")
+                self.menu_2.addAction(names['history' + str(number)])
+                h = names['history' + str(number)]
+                h.triggered.connect(partial(show_history, ui, date))
+                number = number + 1
+    except:
+        QMessageBox.critical(None, '错误', '读取历史记录失败！', QMessageBox.Ok)
 
 
 def clear_his(self, window):
@@ -139,7 +140,7 @@ def choose_city(self):
             f = open('package.json', encoding='utf-8')
             content = f.read()
         except:
-            raise FileNotFoundError("")
+            QMessageBox.critical(None, '错误', '读取城市列表文件错误，请检查package.json!', QMessageBox.Ok)
         else:
             content = json.loads(content)
             content = content['provinces']
@@ -169,8 +170,10 @@ def choose_city(self):
         self.label_10.setText(city)
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", f"{city} 查询结果"))
-    show_city()
-
+    try:
+        show_city()
+    except:
+        self.error_window2()
 
 def get_history_settings(info):
     """
@@ -231,6 +234,14 @@ def after_update_run():
     QtWidgets.QMessageBox.information(None, "更新完成", "新版本已更新完毕", QtWidgets.QMessageBox.Ok)
 
 
+def manual_update():
+    value = judge_update()
+    if value == 'new':
+        QMessageBox.information(None, '检查更新结果', "您使用的是最新版本！", QMessageBox.Ok)
+    else:
+        pass
+
+
 def run(self):
     connect_info = connect.run_main()
     show_weather(self, connect_info)
@@ -242,6 +253,7 @@ def run(self):
     clear_his(self, MainWindow)
     choose_city(self)
     self.menu_5.triggered.connect(partial(query_today_weather, self))
+    self.update.triggered.connect(manual_update)
     if os.path.isfile("../update.bat"):
         after_update_run()
     else:

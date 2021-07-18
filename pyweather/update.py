@@ -14,31 +14,35 @@ def judge_update():
     info = requests.get(api).json()
     update_time = info['published_at']
     path = './pyweather.exe'
-    mtime = os.stat(path).st_mtime
-    modify_time = time.strftime('%Y-%m-%d %H:%M', time.localtime(mtime))
-    update_time = update_time.replace('T', ' ')
-    update_time = update_time.replace('Z', '')
-    update_time = update_time[:-3]
-    exist_file_path = os.path.abspath('.')
-    a = update_time[11]
-    b = update_time[12]
-    c = a + b
-    c = int(c)
-    c = c + 8  # 获取的时间与北京时间有8个小时的时间差
-    c = str(c)
-    if len(c) == 1:
-        c = '0' + c    # 如果是个位数，就补个零
-    update_time = update_time[:11] + c + update_time[13:]
-    if update_time > modify_time:
-        version = get_version()
-        select = QMessageBox.information(None, "有新版本", f"检测到有新版本:{version}, 发布于:{update_time}, 是否更新?", QtWidgets.QMessageBox.Yes)
-        if select == QMessageBox.Yes:
-            app = QApplication(sys.argv)
-            app.quit()
-            update_file_path = download(version)
-            install(update_file_path, exist_file_path)
+    try:
+        mtime = os.stat(path).st_mtime
+    except FileNotFoundError:
+        QMessageBox.warning(None, '警告', '没有找到pyweather.exe文件，无法更新', QMessageBox.Ok)
     else:
-        pass
+        modify_time = time.strftime('%Y-%m-%d %H:%M', time.localtime(mtime))
+        update_time = update_time.replace('T', ' ')
+        update_time = update_time.replace('Z', '')
+        update_time = update_time[:-3]
+        exist_file_path = os.path.abspath('.')
+        a = update_time[11]
+        b = update_time[12]
+        c = a + b
+        c = int(c)
+        c = c + 8  # 获取的时间与北京时间有8个小时的时间差
+        c = str(c)
+        if len(c) == 1:
+            c = '0' + c    # 如果是个位数，就补个零
+        update_time = update_time[:11] + c + update_time[13:]
+        if update_time > modify_time:
+            version = get_version()
+            select = QMessageBox.information(None, "有新版本", f"检测到有新版本:{version}, 发布于:{update_time}, 是否更新?", QtWidgets.QMessageBox.Yes)
+            if select == QMessageBox.Yes:
+                app = QApplication(sys.argv)
+                app.quit()
+                update_file_path = download(version)
+                install(update_file_path, exist_file_path)
+        else:
+            return 'new'
 
 
 def get_version():

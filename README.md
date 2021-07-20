@@ -31,7 +31,7 @@ enjoy it.
 3. 打开解压后的文件夹，启动 "pyweather.exe".
 #### **注意事项**
  目前暂不支持国外ip查询，如使用国外ip会报错！
-####命令行的使用
+#### 命令行的使用
 - 在命令行中加入参数--cmd, print天气和ip等信息 ,例: pyweather.exe --cmd
 - 在 --cmd 后面加上城市名可查询城市天气 ,例: pyweather.exe --cmd 长春
 

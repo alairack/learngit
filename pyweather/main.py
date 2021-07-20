@@ -9,6 +9,7 @@ from functools import partial
 from update import *
 import sys
 import shutil
+import webbrowser
 
 
 def setting_history(info):
@@ -175,6 +176,7 @@ def choose_city(self):
     except:
         self.error_window2()
 
+
 def get_history_settings(info):
     """
     此函数获取存在文本文件中的历史记录设置，返回历史记录设置条数
@@ -242,6 +244,19 @@ def manual_update():
         pass
 
 
+def cmd_command():
+    info = connect.run_main()
+    inner_ip, outer_ip, ip_location = info[0], info[1], info[2]
+    weather, lunar = info[3], info[4]
+    print(f'你的内部ip为： {inner_ip} ')
+    print(f'你的外部ip为:  {outer_ip}')
+    print(f'你所在的地区为:  {ip_location}')
+    print('-------------------------------------------------------------------------')
+    print(f'农历是: {lunar[0]} {lunar[1]} {lunar[2]}')
+    print(f'天气为: {weather}')
+    print('\n')
+
+
 def run(self):
     connect_info = connect.run_main()
     show_weather(self, connect_info)
@@ -252,6 +267,7 @@ def run(self):
     read_history(self)
     clear_his(self, MainWindow)
     choose_city(self)
+    about(self)
     self.menu_5.triggered.connect(partial(query_today_weather, self))
     self.update.triggered.connect(manual_update)
     if os.path.isfile("../update.bat"):
@@ -261,11 +277,41 @@ def run(self):
     sys.exit(app.exec_())
 
 
+def about(self):
+    def about_dialog():
+        content = 'pyweather by alairack\n在哪可以找到我: https://github.com/alairack/pyweather'
+        mag = QMessageBox()
+        mag.setText(content)
+        mag.setWindowTitle('关于')
+        mag.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+        mag.addButton('用浏览器打开', QMessageBox.YesRole)
+        mag.addButton('关闭', QMessageBox.NoRole)
+        choose = mag.exec_()
+        if choose:
+            pass
+        else:
+            webbrowser.open('https://github.com/alairack/pyweather')
+    self.about.triggered.connect(about_dialog)
+
+
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = ip_window.Ui_ip_window()
-    ui.setupUi(MainWindow)
-    run(ui)
-
-
+    try:
+        input_city = sys.argv[2]
+        city_info = connect.get_weather(input_city)
+        print(f'{input_city}: {city_info}')
+    except IndexError:
+        try:
+            if sys.argv[1] == '--cmd':
+                cmd_command()
+            else:
+                app = QApplication(sys.argv)
+                MainWindow = QtWidgets.QMainWindow()
+                ui = ip_window.Ui_ip_window()
+                ui.setupUi(MainWindow)
+                run(ui)
+        except IndexError:
+            app = QApplication(sys.argv)
+            MainWindow = QtWidgets.QMainWindow()
+            ui = ip_window.Ui_ip_window()
+            ui.setupUi(MainWindow)
+            run(ui)

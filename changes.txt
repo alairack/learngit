@@ -1,4 +1,11 @@
- pyweather 2.1版本
+ pyweather 2.2版本:
+     发布于2021/7/20
+
+   -增加了cmd命令，在命令行中加入参数--cmd ,可在终端中print天气和ip等信息 例 pyweather.exe --cmd
+   -在--cmd 后面加上城市名可查询城市天气 例: pyweather.exe --cmd 长春
+   -在'关于'菜单中增加了'关于作者'菜单项,可直接打开github地址
+
+ pyweather 2.1版本:
      发布于2021/7/18
 
    -在菜单栏中增加了'检查更新'按钮
